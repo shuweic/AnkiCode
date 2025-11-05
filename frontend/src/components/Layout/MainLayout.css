@@ -1,0 +1,28 @@
+.ankicode-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
+}
+
+.ankicode-main {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  transition: margin-left var(--duration-base) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ankicode-content {
+  padding: var(--spacing-xl);
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  animation: fadeIn var(--duration-base);
+}
+
+@media (max-width: 768px) {
+  .ankicode-main {
+    margin-left: 0;
+  }
+
+  .ankicode-content {
+    padding: var(--spacing-md);
+  }
+}

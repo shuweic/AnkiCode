@@ -1,0 +1,896 @@
+openapi: 3.0.3
+info:
+  title: Review Scheduler API
+  description: |
+    基于遗忘曲线的学习复习管理系统 API。
+    
+    所有端点（除了注册、登录和健康检查）都需要 JWT 认证。
+    
+    所有响应都遵循统一格式：
+    ```json
+    {
+      "message": "Human-readable message",
+      "data": { ... }
+    }
+    ```
+  version: 1.0.0
+  contact:
+    name: CS409 Team
+    email: support@example.com
+
+servers:
+  - url: http://localhost:5000
+    description: 本地开发服务器
+  - url: https://api.review-scheduler.com
+    description: 生产环境服务器
+
+tags:
+  - name: Auth
+    description: 认证相关端点
+  - name: Problems
+    description: 问题管理
+  - name: Dashboard
+    description: Dashboard 和今日复习
+  - name: Reminders
+    description: 提醒管理
+  - name: Settings
+    description: 用户设置
+  - name: Health
+    description: 健康检查
+
+paths:
+  /api/health:
+    get:
+      tags:
+        - Health
+      summary: 健康检查
+      description: 检查服务器是否正常运行
+      responses:
+        '200':
+          description: 服务器运行正常
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server is running
+                  data:
+                    type: object
+                    properties:
+                      uptime:
+                        type: number
+                        example: 12345.67
+                      version:
+                        type: string
+                        example: "1.0.0"
+                      timestamp:
+                        type: string
+                        format: date-time
+
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: 用户注册
+      description: 创建新用户账户
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: "张三"
+                email:
+                  type: string
+                  format: email
+                  example: "zhangsan@example.com"
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                  example: "password123"
+      responses:
+        '201':
+          description: 注册成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: 用户登录
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: 退出登录
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: 退出成功
+
+  /api/auth/me:
+    get:
+      tags:
+        - Auth
+      summary: 获取当前用户信息
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功获取用户信息
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/problems:
+    get:
+      tags:
+        - Problems
+      summary: 获取问题列表
+      description: |
+        支持查询字符串参数进行过滤、排序和分页。
+        所有过滤和排序都在 Mongoose 层面实现。
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          description: 文本搜索（搜索 name 和 notes）
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: 按状态过滤
+          schema:
+            type: string
+            enum: [todo, in_progress, done]
+        - name: minRating
+          in: query
+          description: 最低评分
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+        - name: maxRating
+          in: query
+          description: 最高评分
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+        - name: deadlineBefore
+          in: query
+          description: 截止日期早于
+          schema:
+            type: string
+            format: date-time
+        - name: deadlineAfter
+          in: query
+          description: 截止日期晚于
+          schema:
+            type: string
+            format: date-time
+        - name: sort
+          in: query
+          description: 排序字段（用逗号分隔多个字段，-表示降序）
+          schema:
+            type: string
+            example: "deadline,-updatedAt"
+        - name: page
+          in: query
+          description: 页码
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: 每页数量
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: 成功获取问题列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      problems:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Problem'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+
+    post:
+      tags:
+        - Problems
+      summary: 创建新问题
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - deadline
+              properties:
+                name:
+                  type: string
+                deadline:
+                  type: string
+                  format: date-time
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                  default: 3
+                notes:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+                status:
+                  type: string
+                  enum: [todo, in_progress, done]
+                  default: todo
+      responses:
+        '201':
+          description: 问题创建成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Problem'
+
+  /api/problems/{id}:
+    get:
+      tags:
+        - Problems
+      summary: 获取问题详情
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功获取问题详情
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Problem'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - Problems
+      summary: 更新问题
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                deadline:
+                  type: string
+                  format: date-time
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                notes:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+                status:
+                  type: string
+                  enum: [todo, in_progress, done]
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Problem'
+
+    delete:
+      tags:
+        - Problems
+      summary: 删除问题
+      description: 删除问题及其相关的所有提醒
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 删除成功
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/dashboard/today:
+    get:
+      tags:
+        - Dashboard
+      summary: 获取今日复习列表
+      description: |
+        返回今天需要复习的问题列表。包括：
+        - 提醒日期在今天或之前的未完成问题
+        - 截止日期在今天且从未练习过的问题
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功获取今日复习列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/TodayReviewItem'
+                      count:
+                        type: integer
+
+  /api/dashboard/mark-done:
+    post:
+      tags:
+        - Dashboard
+      summary: 标记问题为已完成
+      description: |
+        记录一次练习，包括：
+        1. 更新问题的 lastPracticedAt 和 confidenceHistory
+        2. 根据遗忘曲线算法计算下次复习日期
+        3. 创建新的提醒
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - problemId
+                - confidence
+                - completedAt
+              properties:
+                problemId:
+                  type: string
+                confidence:
+                  type: string
+                  enum: [hard, medium, easy]
+                  description: |
+                    信心等级：
+                    - hard: 困难，1天后复习
+                    - medium: 中等，3天后复习
+                    - easy: 简单，7天后复习
+                completedAt:
+                  type: string
+                  format: date-time
+                durationSec:
+                  type: integer
+                  description: 完成时长（秒）
+      responses:
+        '200':
+          description: 练习记录成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      problem:
+                        $ref: '#/components/schemas/ProblemUpdate'
+                      nextReminder:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          scheduledFor:
+                            type: string
+                            format: date-time
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/reminders:
+    get:
+      tags:
+        - Reminders
+      summary: 获取提醒列表
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, sent, snoozed, cancelled]
+        - name: before
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: after
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功获取提醒列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      reminders:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Reminder'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+
+    post:
+      tags:
+        - Reminders
+      summary: 手动创建提醒
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - problemId
+                - scheduledFor
+              properties:
+                problemId:
+                  type: string
+                scheduledFor:
+                  type: string
+                  format: date-time
+      responses:
+        '201':
+          description: 提醒创建成功
+
+  /api/reminders/{id}:
+    put:
+      tags:
+        - Reminders
+      summary: 更新提醒状态
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum: [pending, sent, snoozed, cancelled]
+      responses:
+        '200':
+          description: 更新成功
+
+  /api/settings:
+    get:
+      tags:
+        - Settings
+      summary: 获取用户设置
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功获取设置
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/UserSettings'
+
+  /api/settings/notifications:
+    put:
+      tags:
+        - Settings
+      summary: 更新通知设置
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - optIn
+              properties:
+                optIn:
+                  type: boolean
+      responses:
+        '200':
+          description: 更新成功
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        settings:
+          $ref: '#/components/schemas/UserSettings'
+        problemIds:
+          type: array
+          items:
+            type: string
+
+    UserSettings:
+      type: object
+      properties:
+        notifications:
+          type: object
+          properties:
+            optIn:
+              type: boolean
+        skipWeekends:
+          type: boolean
+
+    Problem:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        deadline:
+          type: string
+          format: date-time
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        notes:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [todo, in_progress, done]
+        lastPracticedAt:
+          type: string
+          format: date-time
+        confidenceHistory:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date-time
+              level:
+                type: string
+                enum: [hard, medium, easy]
+        ownerId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ProblemUpdate:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        lastPracticedAt:
+          type: string
+          format: date-time
+        confidenceHistory:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date-time
+              level:
+                type: string
+
+    Reminder:
+      type: object
+      properties:
+        _id:
+          type: string
+        problemId:
+          type: string
+        userId:
+          type: string
+        scheduledFor:
+          type: string
+          format: date-time
+        createdFrom:
+          type: string
+          enum: [practice, manual]
+        status:
+          type: string
+          enum: [pending, sent, snoozed, cancelled]
+        meta:
+          type: object
+          properties:
+            confidence:
+              type: string
+              enum: [hard, medium, easy]
+            durationSec:
+              type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    TodayReviewItem:
+      type: object
+      properties:
+        problem:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            rating:
+              type: integer
+            notes:
+              type: string
+            status:
+              type: string
+            deadline:
+              type: string
+              format: date-time
+            lastPracticedAt:
+              type: string
+              format: date-time
+        reminder:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+            scheduledFor:
+              type: string
+              format: date-time
+            status:
+              type: string
+
+    AuthResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            token:
+              type: string
+            user:
+              $ref: '#/components/schemas/User'
+
+    Pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        pages:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        data:
+          type: object
+          nullable: true
+
+  responses:
+    BadRequest:
+      description: 请求参数错误
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "Validation failed: name is required"
+            data: null
+
+    Unauthorized:
+      description: 未授权或 token 无效
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "Authentication token has expired"
+            data: null
+
+    NotFound:
+      description: 资源未找到
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "Problem not found"
+            data: null
+
+    ServerError:
+      description: 服务器内部错误
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "An unexpected error occurred. Please try again later."
+            data: null
+

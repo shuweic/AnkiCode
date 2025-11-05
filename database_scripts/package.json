@@ -1,0 +1,20 @@
+{
+  "name": "database_scripts",
+  "version": "1.0.0",
+  "scripts": {
+    "seed": "tsx seed.ts",
+    "wipe": "tsx wipe.ts"
+  },
+  "dependencies": {
+    "mongoose": "^8.0.0",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/bcrypt": "^5.0.2",
+    "typescript": "^5.3.2",
+    "tsx": "^4.7.0"
+  }
+}
+
