@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Brain, Mail, Lock, User, UserPlus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import './Auth.css';
 
@@ -32,7 +33,10 @@ const Register: React.FC = () => {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <h1 className="auth-title">📚 Review Scheduler</h1>
+          <div className="auth-logo">
+            <Brain size={40} strokeWidth={2} />
+          </div>
+          <h1 className="auth-title">AnkiCode</h1>
           <p className="auth-subtitle">Create your account</p>
         </div>
 
@@ -43,53 +47,69 @@ const Register: React.FC = () => {
             <label className="label" htmlFor="name">
               Name
             </label>
-            <input
-              id="name"
-              type="text"
-              className="input"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              autoComplete="name"
-              placeholder="John Doe"
-            />
+            <div className="input-with-icon">
+              <User size={18} className="input-icon" />
+              <input
+                id="name"
+                type="text"
+                className="input input-with-padding"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                autoComplete="name"
+                placeholder="John Doe"
+              />
+            </div>
           </div>
 
           <div className="form-group">
             <label className="label" htmlFor="email">
               Email
             </label>
-            <input
-              id="email"
-              type="email"
-              className="input"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              placeholder="user@example.com"
-            />
+            <div className="input-with-icon">
+              <Mail size={18} className="input-icon" />
+              <input
+                id="email"
+                type="email"
+                className="input input-with-padding"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                placeholder="user@example.com"
+              />
+            </div>
           </div>
 
           <div className="form-group">
             <label className="label" htmlFor="password">
               Password
             </label>
-            <input
-              id="password"
-              type="password"
-              className="input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="new-password"
-              placeholder="At least 6 characters"
-              minLength={6}
-            />
+            <div className="input-with-icon">
+              <Lock size={18} className="input-icon" />
+              <input
+                id="password"
+                type="password"
+                className="input input-with-padding"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="new-password"
+                placeholder="At least 6 characters"
+                minLength={6}
+              />
+            </div>
           </div>
 
           <button type="submit" className="btn btn-primary auth-submit" disabled={loading}>
-            {loading ? <div className="spinner"></div> : 'Sign Up'}
+            {loading ? (
+              <div className="spinner"></div>
+            ) : (
+              <>
+                <UserPlus size={18} />
+                <span>Sign Up</span>
+              </>
+            )}
           </button>
         </form>
 

@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { 
+  Brain, 
+  BarChart3, 
+  Calendar, 
+  Laptop, 
+  Bell, 
+  Settings, 
+  ChevronUp, 
+  ChevronDown, 
+  LogOut 
+} from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import './Sidebar.css';
 
@@ -10,7 +21,16 @@ const Sidebar: React.FC = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const isActive = (path: string) => {
-    return location.pathname === path || location.pathname.startsWith(path);
+    // 精确匹配当前路径
+    if (location.pathname === path) {
+      return true;
+    }
+    // 对于子路径，需要确保后面跟着 '/'，避免误匹配
+    // 例如：/dashboard 不应该匹配 /dashboard/today
+    if (path !== '/dashboard' && location.pathname.startsWith(path + '/')) {
+      return true;
+    }
+    return false;
   };
 
   const handleLogout = async () => {
@@ -23,7 +43,9 @@ const Sidebar: React.FC = () => {
       {/* Logo */}
       <div className="sidebar-brand">
         <Link to="/dashboard" className="brand-link">
-          <div className="brand-icon">🧠</div>
+          <div className="brand-icon">
+            <Brain size={24} />
+          </div>
           <span className="brand-name">Ankicode</span>
         </Link>
       </div>
@@ -36,14 +58,18 @@ const Sidebar: React.FC = () => {
             to="/dashboard" 
             className={`nav-item ${isActive('/dashboard') ? 'nav-item-active' : ''}`}
           >
-            <div className="nav-item-icon">📊</div>
+            <div className="nav-item-icon">
+              <BarChart3 size={20} />
+            </div>
             <span className="nav-item-text">Dashboard</span>
           </Link>
           <Link 
             to="/dashboard/today" 
             className={`nav-item ${isActive('/dashboard/today') ? 'nav-item-active' : ''}`}
           >
-            <div className="nav-item-icon">📅</div>
+            <div className="nav-item-icon">
+              <Calendar size={20} />
+            </div>
             <span className="nav-item-text">Today's Review</span>
           </Link>
         </div>
@@ -54,14 +80,18 @@ const Sidebar: React.FC = () => {
             to="/problems" 
             className={`nav-item ${isActive('/problems') ? 'nav-item-active' : ''}`}
           >
-            <div className="nav-item-icon">💻</div>
+            <div className="nav-item-icon">
+              <Laptop size={20} />
+            </div>
             <span className="nav-item-text">Problems</span>
           </Link>
           <Link 
             to="/reminders" 
             className={`nav-item ${isActive('/reminders') ? 'nav-item-active' : ''}`}
           >
-            <div className="nav-item-icon">⏰</div>
+            <div className="nav-item-icon">
+              <Bell size={20} />
+            </div>
             <span className="nav-item-text">Reminders</span>
           </Link>
         </div>
@@ -72,7 +102,9 @@ const Sidebar: React.FC = () => {
             to="/settings" 
             className={`nav-item ${isActive('/settings') ? 'nav-item-active' : ''}`}
           >
-            <div className="nav-item-icon">⚙️</div>
+            <div className="nav-item-icon">
+              <Settings size={20} />
+            </div>
             <span className="nav-item-text">Preferences</span>
           </Link>
         </div>
@@ -93,7 +125,7 @@ const Sidebar: React.FC = () => {
               <div className="user-email">{user?.email}</div>
             </div>
             <div className="user-menu-icon">
-              {showUserMenu ? '▲' : '▼'}
+              {showUserMenu ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </div>
           </button>
 
@@ -104,7 +136,7 @@ const Sidebar: React.FC = () => {
                 className="user-dropdown-item"
                 onClick={() => setShowUserMenu(false)}
               >
-                <span>⚙️</span>
+                <Settings size={16} />
                 <span>Settings</span>
               </Link>
               <div className="user-dropdown-divider"></div>
@@ -112,7 +144,7 @@ const Sidebar: React.FC = () => {
                 className="user-dropdown-item logout-button"
                 onClick={handleLogout}
               >
-                <span>🚪</span>
+                <LogOut size={16} />
                 <span>Logout</span>
               </button>
             </div>

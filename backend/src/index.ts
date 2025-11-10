@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
+import path from 'path';
 import helmet from 'helmet';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
@@ -13,8 +14,8 @@ import settingsRoutes from './routes/settings';
 import leetcodeRoutes from './routes/leetcode';
 import { sendSuccess } from './utils/responseWrapper';
 
-// 加载环境变量
-dotenv.config();
+// 加载环境变量 - 从根目录读取
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;

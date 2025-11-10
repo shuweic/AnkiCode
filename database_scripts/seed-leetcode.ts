@@ -3,10 +3,13 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import path from 'path';
 
-// 加载环境变量
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+// 加载环境变量 - 从根目录读取
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
 if (!process.env.MONGODB_URI) {
-  dotenv.config({ path: path.resolve(__dirname, '../backend/.env') });
+  console.error('❌ MONGODB_URI not found in environment variables');
+  console.error('   Please copy .env.example to .env and configure your MongoDB connection');
+  process.exit(1);
 }
 
 // Schema

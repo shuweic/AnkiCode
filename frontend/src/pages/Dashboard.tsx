@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+import { Calendar, FileText, Rocket, CheckCircle, PartyPopper } from 'lucide-react';
 import { dashboardApi } from '../api/dashboard';
 import { problemsApi } from '../api/problems';
 import './Dashboard.css';
@@ -33,7 +34,9 @@ const Dashboard: React.FC = () => {
 
       <div className="dashboard-stats">
         <div className="stat-card stat-card-primary">
-          <div className="stat-icon">📅</div>
+          <div className="stat-icon">
+            <Calendar size={24} />
+          </div>
           <div className="stat-content">
             <div className="stat-label">Due Today</div>
             <div className="stat-value">{todayCount}</div>
@@ -41,7 +44,9 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div className="stat-card stat-card-secondary">
-          <div className="stat-icon">📝</div>
+          <div className="stat-icon">
+            <FileText size={24} />
+          </div>
           <div className="stat-content">
             <div className="stat-label">To Start</div>
             <div className="stat-value">{todoCount}</div>
@@ -49,7 +54,9 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div className="stat-card stat-card-info">
-          <div className="stat-icon">🚀</div>
+          <div className="stat-icon">
+            <Rocket size={24} />
+          </div>
           <div className="stat-content">
             <div className="stat-label">In Progress</div>
             <div className="stat-value">{inProgressCount}</div>
@@ -57,7 +64,9 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div className="stat-card stat-card-success">
-          <div className="stat-icon">✅</div>
+          <div className="stat-icon">
+            <CheckCircle size={24} />
+          </div>
           <div className="stat-content">
             <div className="stat-label">Completed</div>
             <div className="stat-value">{doneCount}</div>
@@ -89,7 +98,9 @@ const Dashboard: React.FC = () => {
             </div>
           ) : (
             <div className="empty-state">
-              <div className="empty-state-icon">🎉</div>
+              <div className="empty-state-icon">
+                <PartyPopper size={48} />
+              </div>
               <div className="empty-state-title">Awesome!</div>
               <div className="empty-state-text">No problems due for review today</div>
             </div>
@@ -135,7 +146,9 @@ const Dashboard: React.FC = () => {
             </div>
           ) : (
             <div className="empty-state">
-              <div className="empty-state-icon">📝</div>
+              <div className="empty-state-icon">
+                <FileText size={48} />
+              </div>
               <div className="empty-state-text">No problems yet</div>
             </div>
           )}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Brain, Mail, Lock, LogIn } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import './Auth.css';
 
@@ -31,7 +32,10 @@ const Login: React.FC = () => {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <h1 className="auth-title">📚 Review Scheduler</h1>
+          <div className="auth-logo">
+            <Brain size={40} strokeWidth={2} />
+          </div>
+          <h1 className="auth-title">AnkiCode</h1>
           <p className="auth-subtitle">Sign in to your account</p>
         </div>
 
@@ -42,36 +46,49 @@ const Login: React.FC = () => {
             <label className="label" htmlFor="email">
               Email
             </label>
-            <input
-              id="email"
-              type="email"
-              className="input"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              placeholder="user@example.com"
-            />
+            <div className="input-with-icon">
+              <Mail size={18} className="input-icon" />
+              <input
+                id="email"
+                type="email"
+                className="input input-with-padding"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                placeholder="user@example.com"
+              />
+            </div>
           </div>
 
           <div className="form-group">
             <label className="label" htmlFor="password">
               Password
             </label>
-            <input
-              id="password"
-              type="password"
-              className="input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-              placeholder="••••••••"
-            />
+            <div className="input-with-icon">
+              <Lock size={18} className="input-icon" />
+              <input
+                id="password"
+                type="password"
+                className="input input-with-padding"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+                placeholder="••••••••"
+              />
+            </div>
           </div>
 
           <button type="submit" className="btn btn-primary auth-submit" disabled={loading}>
-            {loading ? <div className="spinner"></div> : 'Sign In'}
+            {loading ? (
+              <div className="spinner"></div>
+            ) : (
+              <>
+                <LogIn size={18} />
+                <span>Sign In</span>
+              </>
+            )}
           </button>
         </form>
 
@@ -86,7 +103,7 @@ const Login: React.FC = () => {
 
         <div className="auth-demo-info">
           <p className="auth-demo-title">Demo Account:</p>
-          <p>Email: user1@example.com</p>
+          <p>Email: demo@example.com</p>
           <p>Password: password123</p>
         </div>
       </div>

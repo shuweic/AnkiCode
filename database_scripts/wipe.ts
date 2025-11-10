@@ -2,13 +2,13 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import path from 'path';
 
-// 加载环境变量（优先使用当前目录的 .env，如果没有则使用 backend 的）
-const envPath = path.resolve(__dirname, '.env');
-dotenv.config({ path: envPath });
+// 加载环境变量 - 从根目录读取
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
-// 如果当前目录没有 .env，尝试使用 backend 的
 if (!process.env.MONGODB_URI) {
-  dotenv.config({ path: path.resolve(__dirname, '../backend/.env') });
+  console.error('❌ MONGODB_URI not found in environment variables');
+  console.error('   Please copy .env.example to .env and configure your MongoDB connection');
+  process.exit(1);
 }
 
 async function wipeDatabase() {
