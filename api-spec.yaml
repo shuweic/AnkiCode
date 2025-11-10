@@ -435,6 +435,36 @@ paths:
                       count:
                         type: integer
 
+  /api/dashboard/todayemail:
+    post:
+      tags:
+        - Dashboard
+      summary: 发送今日复习邮件
+      description: |
+        将 `/api/dashboard/today` 返回的内容整理成简单的 HTML 邮件，并发送到当前登录用户的邮箱。
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 邮件发送成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      count:
+                        type: integer
+                        description: 邮件中包含的复习项目数量
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
   /api/dashboard/mark-done:
     post:
       tags:

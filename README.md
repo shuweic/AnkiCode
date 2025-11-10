@@ -154,6 +154,12 @@ PORT=3000
 MONGODB_URI=mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@cluster0.xxxxx.mongodb.net/?appName=Cluster0
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 NODE_ENV=development
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=yourname@gmail.com
+SMTP_PASS=abcdefghijklmnop
+EMAIL_FROM="AnkiCode <yourname@gmail.com>"
+SMTP_SECURE=true
 EOF
 
 # 安装依赖
@@ -164,6 +170,17 @@ npm run dev
 ```
 
 后端将在 `http://localhost:3000` 运行
+
+#### 邮件通知环境变量说明
+
+系统使用 SMTP 发送复习提醒邮件，请在 `backend/.env` 中配置以下变量：
+
+- `SMTP_HOST`：SMTP 服务器地址，例如 `smtp.gmail.com`
+- `SMTP_PORT`：SMTP 端口，常见端口 `587`（STARTTLS）或 `465`（SSL）
+- `SMTP_USER`：SMTP 登录用户名，通常为邮箱账号
+- `SMTP_PASS`：SMTP 登录密码或授权码
+- `EMAIL_FROM`：邮件发件人地址，需与 SMTP 服务允许的地址一致
+- `SMTP_SECURE`：是否启用 SSL/TLS，`true` 表示使用 465 端口等加密连接，`false` 表示使用 STARTTLS
 
 ### 3. 配置前端
 
