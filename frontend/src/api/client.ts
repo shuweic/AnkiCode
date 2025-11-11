@@ -1,9 +1,8 @@
 import axios, { AxiosError } from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
+// 使用空的 baseURL，让请求通过 Vite 的代理
 export const apiClient = axios.create({
-  baseURL: API_URL,
+  baseURL: '',
   headers: {
     'Content-Type': 'application/json',
   },
