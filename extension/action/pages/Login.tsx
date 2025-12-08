@@ -4,14 +4,13 @@ import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Button, Flex, Form, Input, Typography, message } from "antd";
 import { Brain, LogIn } from "lucide-react";
 
-import Link from "@/components/Link";
 import AuthContext, { AuthStateTag } from "@/contexts/AuthContext";
 import { authApi } from "@/api/auth";
 
 import "./Login.css";
 
 
-const { Title, Text } = Typography;
+const { Title, Text, Link } = Typography;
 
 type LoginForm = {
     email?: string;
@@ -132,7 +131,7 @@ export default function Login() {
                 </Form>
                 <Text type="secondary" className="footer">
                     Don't have an account?{' '}
-                    <Link to={`${EXTENSION_PUBLIC_SITE_URL}/register`} target="_blank">
+                    <Link href={`${EXTENSION_PUBLIC_SITE_URL}/register`} target="_blank">
                         Sign up now
                     </Link>
                 </Text>

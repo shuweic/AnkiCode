@@ -4,3 +4,36 @@
   width: 375px;
   height: 600px;
 }
+
+:root {
+  --status-todo: #8C8C8C;
+  --status-todo-bg: #F5F5F5;
+  --status-progress: #00A8E1;
+  --status-progress-bg: #E6F7FF;
+  --status-done: #2CBB5D;
+  --status-done-bg: #E8F5E9;
+}
+
+.badge {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.badge-todo {
+  background-color: var(--status-todo-bg);
+  color: var(--status-todo);
+}
+
+.badge-in_progress {
+  background-color: var(--status-progress-bg);
+  color: var(--status-progress);
+}
+
+.badge-done {
+  background-color: var(--status-done-bg);
+  color: var(--status-done);
+}

@@ -13,11 +13,14 @@ export const apiClient = axios.create({
 // 请求拦截器：添加 token
 apiClient.interceptors.request.use(
     async (config) => {
-        const storage = await chrome.storage.local.get("ankicode-extension-edge");
-        const data = storage["data"];
-        if (data && data.token && data.user) {
-            config.headers.Authorization = `Bearer ${data.token}`;
+        const storage = (await chrome.storage.local.get("ankicode-extension-edge"))["ankicode-extension-edge"];
+        if (storage) {
+            const data = storage["data"];
+            if (data && data.token && data.user) {
+                config.headers.Authorization = `Bearer ${data.token}`;
+            }
         }
+
         return config;
     },
     (error) => {

@@ -35,3 +35,8 @@
         opacity: 0.8;
     }
 }
+
+.dashboard .ant-tabs-nav-wrap .ant-tabs-nav-list {
+    width: 100%;
+    justify-content: space-between;
+}
