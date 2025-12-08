@@ -1,10 +1,21 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { remindersApi } from '../api/reminders';
 import { problemsApi } from '../api/problems';
 import './Reminders.css';
 
+const STORAGE_KEY = 'reminders-only-pending';
+
 const Reminders: React.FC = () => {
+  const [onlyPending, setOnlyPending] = useState(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored !== null ? stored === 'true' : true;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, String(onlyPending));
+  }, [onlyPending]);
+
   const { data: remindersData, isLoading: remindersLoading } = useQuery({
     queryKey: ['reminders'],
     queryFn: () => remindersApi.getReminders(),
@@ -23,7 +34,12 @@ const Reminders: React.FC = () => {
     return map;
   }, [problemsData]);
 
-  const reminders = remindersData?.data.reminders || [];
+  const allReminders = remindersData?.data.reminders || [];
+  const reminders = useMemo(() => {
+    if (!onlyPending) return allReminders;
+    return allReminders.filter((r) => r.status === 'pending' || r.status === 'snoozed');
+  }, [allReminders, onlyPending]);
+
   const isLoading = remindersLoading || problemsLoading;
 
   const getProblemName = (problemId: string | any): string => {
@@ -37,6 +53,17 @@ const Reminders: React.FC = () => {
     <div className="reminders">
       <div className="page-header">
         <h1 className="page-title">Reminders</h1>
+        <div className="reminders-filter">
+          <span className="reminders-filter-label">Only Pending</span>
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={onlyPending}
+              onChange={(e) => setOnlyPending(e.target.checked)}
+            />
+            <span className="slider"></span>
+          </label>
+        </div>
       </div>
 
       {isLoading ? (
