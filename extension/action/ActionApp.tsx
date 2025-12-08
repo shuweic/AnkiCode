@@ -38,15 +38,16 @@ function ActionApp() {
 
   useEffect(() => {
     (async () => {
-      const storage = await chrome.storage.local.get("ankicode-extension-edge");
-      const data = storage["ankicode-extension-edge"]["data"];
-      console.log("Stored auth data:", storage);
-      if (data && data.token && data.user) {
-        setAuthState({
-          tag: AuthStateTag.LoggedIn,
-          data,
-        });
-        return;
+      const storage = (await chrome.storage.local.get("ankicode-extension-edge"))["ankicode-extension-edge"];
+      if (storage) {
+        const data = storage["data"];
+        if (data && data.token && data.user) {
+          setAuthState({
+            tag: AuthStateTag.LoggedIn,
+            data,
+          });
+          return;
+        }
       }
 
       setAuthState({ tag: AuthStateTag.LoggedOut });

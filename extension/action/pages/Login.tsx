@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
-import { Button, Flex, Form, Input, Typography, Alert } from "antd";
+import { Button, Flex, Form, Input, Typography, message } from "antd";
 import { Brain, LogIn } from "lucide-react";
 
 import AuthContext, { AuthStateTag } from "@/contexts/AuthContext";
@@ -36,6 +36,7 @@ export default function Login() {
         tag: LoginStateTag.Normal,
     });
     const navigate = useNavigate();
+    const [messageApi, contextHolder] = message.useMessage();
 
     const onFinish = async (values: LoginForm) => {
         setLoginState({ tag: LoginStateTag.Login });
@@ -54,84 +55,91 @@ export default function Login() {
             navigate('/');
         } catch (error: any) {
             console.error("Login failed:", error);
-            setLoginState({ tag: LoginStateTag.Normal, data: error.response?.data?.message || 'Login failed. Please check your credentials' });
+            const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials';
+            setLoginState({ tag: LoginStateTag.Normal, data: errorMessage });
+            messageApi.open({
+                type: 'error',
+                content: errorMessage,
+            });
         }
     };
     return (
-        <div className="main">
-            <Flex vertical justify='center' align='center' className="header">
-                <div className="logo">
-                    <Brain size={48} />
-                </div>
-                <Title>AnkiCode</Title>
-                <Text type="secondary" className="subtitle">Sign in to your account</Text>
-            </Flex>
-            {loginState.tag == LoginStateTag.Normal && loginState.data && <Alert className="error" title={loginState.data} type="error" />}
-            <Form name="login" onFinish={onFinish}>
-                <Flex vertical gap={0}>
-                    <Form.Item<LoginForm>
-                        name="email"
-                        rules={[{ required: true, message: '' }]}
-                    >
-                        <Flex vertical className="input">
-                            <Text strong className="label">Email</Text>
-                            <Input
-                                size="large"
-                                placeholder="user@example.com"
-                                prefix={
-                                    <div className="icon">
-                                        <MailOutlined />
-                                    </div>
-                                }
-                                type="email"
-                                disabled={loginState.tag === LoginStateTag.Login}
-                            />
-                        </Flex>
-                    </Form.Item>
-                    <Form.Item<LoginForm>
-                        name="password"
-                        rules={[{ required: true, message: '' }]}
-                    >
-                        <Flex vertical className="input">
-                            <Text strong className="label">Password</Text>
-                            <Input
-                                size="large"
-                                placeholder="••••••••"
-                                prefix={
-                                    <div className="icon">
-                                        <LockOutlined />
-                                    </div>
-                                }
-                                type="password"
-                                disabled={loginState.tag === LoginStateTag.Login}
-                            />
-                        </Flex>
-                    </Form.Item>
-
-                    <Form.Item>
-                        <Flex justify="center">
-                            <Button
-                                color="orange"
-                                variant="solid"
-                                htmlType="submit"
-                                size="large"
-                                className="submit"
-                                loading={loginState.tag === LoginStateTag.Login}
-                            >
-                                <LogIn size={18} />
-                                <span>Sign In</span>
-                            </Button>
-                        </Flex>
-                    </Form.Item>
+        <>
+            {contextHolder}
+            <div className="main">
+                <Flex vertical justify='center' align='center' className="header">
+                    <div className="logo">
+                        <Brain size={48} />
+                    </div>
+                    <Title>AnkiCode</Title>
+                    <Text type="secondary" className="subtitle">Sign in to your account</Text>
                 </Flex>
-            </Form>
-            <Text type="secondary" className="footer">
-                Don't have an account?{' '}
-                <Link to={`${EXTENSION_PUBLIC_SITE_URL}/register`} target="_blank" className="link">
-                    Sign up now
-                </Link>
-            </Text>
+                <Form name="login" onFinish={onFinish}>
+                    <Flex vertical gap={0}>
+                        <Form.Item<LoginForm>
+                            name="email"
+                            rules={[{ required: true, message: '' }]}
+                        >
+                            <Flex vertical className="input">
+                                <Text strong className="label">Email</Text>
+                                <Input
+                                    size="large"
+                                    placeholder="user@example.com"
+                                    prefix={
+                                        <div className="icon">
+                                            <MailOutlined />
+                                        </div>
+                                    }
+                                    type="email"
+                                    disabled={loginState.tag === LoginStateTag.Login}
+                                />
+                            </Flex>
+                        </Form.Item>
+                        <Form.Item<LoginForm>
+                            name="password"
+                            rules={[{ required: true, message: '' }]}
+                        >
+                            <Flex vertical className="input">
+                                <Text strong className="label">Password</Text>
+                                <Input
+                                    size="large"
+                                    placeholder="••••••••"
+                                    prefix={
+                                        <div className="icon">
+                                            <LockOutlined />
+                                        </div>
+                                    }
+                                    type="password"
+                                    disabled={loginState.tag === LoginStateTag.Login}
+                                />
+                            </Flex>
+                        </Form.Item>
 
-        </div>
+                        <Form.Item>
+                            <Flex justify="center">
+                                <Button
+                                    color="orange"
+                                    variant="solid"
+                                    htmlType="submit"
+                                    size="large"
+                                    className="submit"
+                                    loading={loginState.tag === LoginStateTag.Login}
+                                >
+                                    <LogIn size={18} />
+                                    <span>Sign In</span>
+                                </Button>
+                            </Flex>
+                        </Form.Item>
+                    </Flex>
+                </Form>
+                <Text type="secondary" className="footer">
+                    Don't have an account?{' '}
+                    <Link to={`${EXTENSION_PUBLIC_SITE_URL}/register`} target="_blank" className="link">
+                        Sign up now
+                    </Link>
+                </Text>
+
+            </div>
+        </>
     )
 }
