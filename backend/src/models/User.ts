@@ -5,6 +5,7 @@ export interface IUser extends Document {
   _id: Types.ObjectId;
   name: string;
   email: string;
+  notificationEmail: string;
   passwordHash: string;
   leetcodeUsername?: string;
   problemIds: Types.ObjectId[];
@@ -27,6 +28,11 @@ const userSchema = new Schema<IUser>(
       lowercase: true,
       trim: true,
       index: true,
+    },
+    notificationEmail: {
+      type: String,
+      lowercase: true,
+      trim: true,
     },
     passwordHash: {
       type: String,
@@ -62,6 +68,14 @@ const userSchema = new Schema<IUser>(
 
 // 索引
 userSchema.index({ email: 1 });
+
+// Set notificationEmail to email if not provided
+userSchema.pre('save', function (next) {
+  if (!this.notificationEmail) {
+    this.notificationEmail = this.email;
+  }
+  next();
+});
 
 export const User = mongoose.model<IUser>('User', userSchema);
 

@@ -14,6 +14,10 @@ const updateLeetCodeUsernameSchema = z.object({
   leetcodeUsername: z.string().trim(),
 });
 
+const updateNotificationEmailSchema = z.object({
+  notificationEmail: z.string().email('Invalid email address').trim().toLowerCase(),
+});
+
 export const getSettings = async (
   req: AuthRequest,
   res: Response,
@@ -96,6 +100,36 @@ export const updateLeetCodeUsername = async (
     sendSuccess(res, 'LeetCode username updated successfully.', {
       leetcodeUsername: user.leetcodeUsername,
       leetcodeStats: leetcodeInfo,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateNotificationEmail = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!req.userId) {
+      throw new AppError('Authentication required.', 401);
+    }
+
+    const validatedData = updateNotificationEmailSchema.parse(req.body);
+
+    const user = await User.findByIdAndUpdate(
+      req.userId,
+      { notificationEmail: validatedData.notificationEmail },
+      { new: true, runValidators: true }
+    ).select('notificationEmail');
+
+    if (!user) {
+      throw new AppError('User not found.', 404);
+    }
+
+    sendSuccess(res, 'Notification email updated successfully.', {
+      notificationEmail: user.notificationEmail,
     });
   } catch (error) {
     next(error);
