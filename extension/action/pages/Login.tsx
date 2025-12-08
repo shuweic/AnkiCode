@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Button, Flex, Form, Input, Typography, message } from "antd";
 import { Brain, LogIn } from "lucide-react";
 
+import Link from "@/components/Link";
 import AuthContext, { AuthStateTag } from "@/contexts/AuthContext";
 import { authApi } from "@/api/auth";
 
@@ -35,7 +35,6 @@ export default function Login() {
     const [loginState, setLoginState] = useState<LoginState>({
         tag: LoginStateTag.Normal,
     });
-    const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
 
     const onFinish = async (values: LoginForm) => {
@@ -52,7 +51,6 @@ export default function Login() {
                 }
             });
             setAuthState({ tag: AuthStateTag.LoggedIn, data });
-            navigate('/');
         } catch (error: any) {
             console.error("Login failed:", error);
             const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials';
@@ -66,7 +64,7 @@ export default function Login() {
     return (
         <>
             {contextHolder}
-            <div className="main">
+            <div className="login">
                 <Flex vertical justify='center' align='center' className="header">
                     <div className="logo">
                         <Brain size={48} />
@@ -134,7 +132,7 @@ export default function Login() {
                 </Form>
                 <Text type="secondary" className="footer">
                     Don't have an account?{' '}
-                    <Link to={`${EXTENSION_PUBLIC_SITE_URL}/register`} target="_blank" className="link">
+                    <Link to={`${EXTENSION_PUBLIC_SITE_URL}/register`} target="_blank">
                         Sign up now
                     </Link>
                 </Text>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { createMemoryRouter } from "react-router";
-import { RouterProvider } from "react-router-dom";
+
+import { Flex, Tabs, Typography } from "antd";
+import { Brain } from "lucide-react";
 
 import AuthContext, { type AuthState, AuthStateTag } from "@/contexts/AuthContext";
 
@@ -10,24 +11,9 @@ import Preference from "@/pages/Preference";
 import Problem from "@/pages/Problem";
 import Review from "@/pages/Review";
 
-const router = createMemoryRouter([
-  {
-    path: "/",
-    element: <Review />,
-  },
-  {
-    path: "/preference",
-    element: <Preference />,
-  },
-  {
-    path: "/problem",
-    element: <Problem />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  }
-]);
+import "./ActionApp.css";
+
+const { Title, Text } = Typography;
 
 function ActionApp() {
   const [authState, setAuthState] = (
@@ -35,6 +21,23 @@ function ActionApp() {
       tag: AuthStateTag.Undecided,
     })
   );
+  const dashboardItems = [
+    {
+      key: "1",
+      label: <Title level={5} className="title">Review</Title>,
+      children: <Review />,
+    },
+    {
+      key: "2",
+      label: <Title level={5} className="title">Problem</Title>,
+      children: <Problem />,
+    },
+    {
+      key: "3",
+      label: <Title level={5} className="title">Preference</Title>,
+      children: <Preference />,
+    },
+  ];
 
   useEffect(() => {
     (async () => {
@@ -51,18 +54,27 @@ function ActionApp() {
       }
 
       setAuthState({ tag: AuthStateTag.LoggedOut });
-      router.navigate("/login");
     })();
   }, [])
 
   return (
     <AuthContext.Provider value={{ authState, setAuthState }}>
       {
-        authState.tag === AuthStateTag.Undecided ? (
-          <Loading />
-        ) : (
-          <RouterProvider router={router} />
-        )
+        {
+          [AuthStateTag.Undecided]: <Loading />,
+          [AuthStateTag.LoggedOut]: <Login />,
+          [AuthStateTag.LoggedIn]:
+            <div className="dashboard">
+              <Flex justify="center" gap={8}>
+                <div className="logo">
+                  <Brain size={24} />
+                </div>
+                <Title level={3}>AnkiCode</Title>
+              </Flex>
+              <Tabs items={dashboardItems} centered className="nav"></Tabs>
+            </div>
+          ,
+        }[authState.tag]
       }
     </AuthContext.Provider>
   )

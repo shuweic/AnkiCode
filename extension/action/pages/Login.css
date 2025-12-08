@@ -1,17 +1,17 @@
-.main {
+.login {
     padding: 48px 40px;
     padding-right: 25px;
 }
 
-.header {
+.login .header {
     margin-bottom: 36px;
 }
 
-.subtitle {
+.login .header .subtitle {
     font-size: 16px;
 }
 
-.logo {
+.login .header .logo {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -24,24 +24,24 @@
     box-shadow: 0 8px 16px -4px rgba(102, 126, 234, 0.4);
 }
 
-.input {
+.login .input {
     margin-bottom: 8px;
 }
 
-.label {
+.login .input .label {
     margin-bottom: 4px;
 }
 
-.icon {
+.login .input .icon {
     padding-right: 4px;
 }
 
-.submit {
+.login .submit {
     margin-top: 12px;
     width: 100%;
 }
 
-.footer {
+.login .footer {
     text-align: center;
     width: 100%;
     display: block;
