@@ -6,17 +6,35 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "moduleResolution": "node",
     "module": "esnext",
     "noEmit": true,
     "resolveJsonModule": true,
     "strict": true,
     "target": "esnext",
+    "types": [
+      "node"
+    ],
     "verbatimModuleSyntax": true,
     "useDefineForClassFields": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": [
+        "./action/*"
+      ]
+    }
   },
-  "include": ["./", "extension-env.d.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "./",
+    "extension-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

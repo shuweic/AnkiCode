@@ -14,12 +14,18 @@
     "activeTab",
     "scripting"
   ],
+  "background": {
+    "service_worker": "service_worker.ts"
+  },
   "action": {
-    "default_popup": "./action/index.html",
+    "default_popup": "action/index.html",
     "default_title": "AnkiCode Extension",
     "default_icon": {
       "16": "images/extension_16.png",
       "48": "images/extension_48.png"
     }
-  }
+  },
+  "host_permissions": [
+    "$EXTENSION_PUBLIC_API_URL/*"
+  ]
 }
