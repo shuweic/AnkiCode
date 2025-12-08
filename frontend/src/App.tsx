@@ -10,6 +10,7 @@ import TodayReview from './pages/TodayReview';
 import Problems from './pages/Problems';
 import ProblemDetail from './pages/ProblemDetail';
 import Settings from './pages/Settings';
+import Reminders from './pages/Reminders';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -84,6 +85,7 @@ function App() {
               <Route path="dashboard/today" element={<TodayReview />} />
               <Route path="problems" element={<Problems />} />
               <Route path="problems/:id" element={<ProblemDetail />} />
+              <Route path="reminders" element={<Reminders />} />
               <Route path="settings" element={<Settings />} />
             </Route>
 
