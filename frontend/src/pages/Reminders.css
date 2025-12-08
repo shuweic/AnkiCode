@@ -53,6 +53,17 @@
   color: var(--text-primary);
 }
 
+.reminder-link {
+  color: var(--text-link);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.reminder-link:hover {
+  color: #0088B8;
+  text-decoration: underline;
+}
+
 .loading-container {
   display: flex;
   align-items: center;

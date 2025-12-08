@@ -29,7 +29,7 @@ const Reminders: React.FC = () => {
   const problemMap = useMemo(() => {
     const map = new Map();
     problemsData?.data.problems.forEach((problem) => {
-      map.set(problem._id || problem.id, problem.name);
+      map.set(problem._id || problem.id, problem);
     });
     return map;
   }, [problemsData]);
@@ -42,11 +42,15 @@ const Reminders: React.FC = () => {
 
   const isLoading = remindersLoading || problemsLoading;
 
-  const getProblemName = (problemId: string | any): string => {
+  const getProblem = (problemId: string | any) => {
     const id = typeof problemId === 'string' 
       ? problemId 
       : problemId?._id || problemId?.id;
-    return problemMap.get(id) || 'Unknown';
+    return problemMap.get(id);
+  };
+
+  const getLeetCodeUrl = (titleSlug: string): string => {
+    return `https://leetcode.com/problems/${titleSlug}/`;
   };
 
   return (
@@ -82,7 +86,24 @@ const Reminders: React.FC = () => {
             <div key={reminder._id || reminder.id} className="reminder-item">
               <div className="reminder-field">
                 <span className="reminder-label">Problem Name:</span>
-                <span className="reminder-value">{getProblemName(reminder.problemId)}</span>
+                <span className="reminder-value">
+                  {(() => {
+                    const problem = getProblem(reminder.problemId);
+                    if (problem?.titleSlug) {
+                      return (
+                        <a
+                          href={getLeetCodeUrl(problem.titleSlug)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="reminder-link"
+                        >
+                          {problem.name || 'Unknown'}
+                        </a>
+                      );
+                    }
+                    return problem?.name || 'Unknown';
+                  })()}
+                </span>
               </div>
               <div className="reminder-field">
                 <span className="reminder-label">Scheduled For:</span>
