@@ -103,7 +103,7 @@ const Login: React.FC = () => {
 
         <div className="auth-demo-info">
           <p className="auth-demo-title">Demo Account:</p>
-          <p>Email: demo@example.com</p>
+          <p>Email: user1@example.com</p>
           <p>Password: password123</p>
         </div>
       </div>
