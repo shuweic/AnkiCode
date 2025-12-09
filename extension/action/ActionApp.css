@@ -15,10 +15,6 @@
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-.dashboard .nav {
-    margin-bottom: 12px;
-}
-
 .dashboard .nav .title {
     margin-bottom: -4px;
     color: #595959;

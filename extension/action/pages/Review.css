@@ -3,6 +3,10 @@
     overflow-y: scroll;
 }
 
+.review .loading {
+    margin-top: 192px;
+}
+
 .review .number {
     display: inline-flex;
     align-items: center;
@@ -41,4 +45,27 @@
 
 .review .detail .marker {
     margin-bottom: 2px;
+}
+
+.review .empty-state {
+    padding: 48px;
+    text-align: center;
+}
+
+.review .empty-state-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.review .empty-state-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #262626;
+    margin-bottom: 8px;
+}
+
+.review .empty-state-text {
+    font-size: 16px;
+    color: #595959;
 }
