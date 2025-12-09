@@ -13,7 +13,9 @@
     "dev:frontend": "npm run dev --workspace=frontend",
     "seed": "npm run seed --workspace=database_scripts",
     "wipe": "npm run wipe --workspace=database_scripts",
-    "fixinvalid": "npm run fixinvalid --workspace=database_scripts"
+    "fixinvalid": "npm run fixinvalid --workspace=database_scripts",
+    "fixusers": "npm run fixusers --workspace=database_scripts",
+    "send-reminders": "npm run send-reminders --workspace=backend"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

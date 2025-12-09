@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
   {
     name: String,
     email: { type: String, unique: true },
+    notificationEmail: String,
     passwordHash: String,
     problemIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Problem' }],
     settings: {
@@ -111,9 +112,11 @@ async function seedDatabase() {
     const passwordHash = await bcrypt.hash('password123', 10);
 
     for (let i = 1; i <= 25; i++) {
+      const email = `user${i}@example.com`;
       const user = await User.create({
         name: `User ${i}`,
-        email: `user${i}@example.com`,
+        email,
+        notificationEmail: email,
         passwordHash,
         problemIds: [],
         settings: {

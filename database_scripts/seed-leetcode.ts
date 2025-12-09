@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
   {
     name: String,
     email: { type: String, unique: true },
+    notificationEmail: String,
     passwordHash: String,
     leetcodeUsername: String,
     problemIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Problem' }],
@@ -113,9 +114,11 @@ async function seedDatabase() {
     // 创建用户
     console.log('👥 Creating users...');
     const passwordHash = await bcrypt.hash('password123', 10);
+    const email = 'demo@example.com';
     const user = await User.create({
       name: 'Demo User',
-      email: 'demo@example.com',
+      email,
+      notificationEmail: email,
       passwordHash,
       leetcodeUsername: 'demo',
       problemIds: [],
