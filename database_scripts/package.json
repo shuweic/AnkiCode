@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "seed": "tsx seed.ts",
-    "wipe": "tsx wipe.ts"
+    "wipe": "tsx wipe.ts",
+    "fixinvalid": "tsx fix-invalid-problems.ts",
+    "fixusers": "tsx fix-users.ts"
   },
   "dependencies": {
     "mongoose": "^8.0.0",

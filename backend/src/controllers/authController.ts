@@ -28,6 +28,7 @@ export const register = async (
     const user = await User.create({
       name: validatedData.name,
       email: validatedData.email,
+      notificationEmail: validatedData.email,
       passwordHash,
       problemIds: [],
       settings: {
@@ -49,6 +50,7 @@ export const register = async (
         id: user._id,
         name: user.name,
         email: user.email,
+        notificationEmail: user.notificationEmail,
         settings: user.settings,
       },
     });
@@ -88,6 +90,7 @@ export const login = async (
         id: user._id,
         name: user.name,
         email: user.email,
+        notificationEmail: user.notificationEmail,
         settings: user.settings,
       },
     });
@@ -128,6 +131,7 @@ export const getCurrentUser = async (
       id: user._id,
       name: user.name,
       email: user.email,
+      notificationEmail: user.notificationEmail,
       settings: user.settings,
       problemIds: user.problemIds,
     });

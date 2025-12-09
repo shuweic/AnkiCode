@@ -17,12 +17,22 @@ const Settings: React.FC = () => {
   });
 
   const [notificationsOptIn, setNotificationsOptIn] = useState(false);
+  const [notificationEmail, setNotificationEmail] = useState('');
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [emailInputValue, setEmailInputValue] = useState('');
 
   useEffect(() => {
     if (data?.data) {
       setNotificationsOptIn(data.data.notifications.optIn);
     }
-  }, [data]);
+    if (user?.notificationEmail) {
+      setNotificationEmail(user.notificationEmail);
+      setEmailInputValue(user.notificationEmail);
+    } else if (user?.email) {
+      setNotificationEmail(user.email);
+      setEmailInputValue(user.email);
+    }
+  }, [data, user]);
 
   const updateNotificationsMutation = useMutation({
     mutationFn: (optIn: boolean) => settingsApi.updateNotifications(optIn),
@@ -35,9 +45,45 @@ const Settings: React.FC = () => {
     },
   });
 
+  const updateNotificationEmailMutation = useMutation({
+    mutationFn: (email: string) => settingsApi.updateNotificationEmail(email),
+    onSuccess: (response) => {
+      showToast('Notification email updated', 'success');
+      setNotificationEmail(response.data.notificationEmail);
+      setIsEditingEmail(false);
+      queryClient.invalidateQueries({ queryKey: ['settings'] });
+      // Update user in auth context
+      if (user) {
+        const updatedUser = { ...user, notificationEmail: response.data.notificationEmail };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+    },
+    onError: (error: any) => {
+      showToast(error.response?.data?.message || 'Update failed', 'error');
+    },
+  });
+
   const handleNotificationsChange = (checked: boolean) => {
     setNotificationsOptIn(checked);
     updateNotificationsMutation.mutate(checked);
+  };
+
+  const handleEmailEdit = () => {
+    setIsEditingEmail(true);
+    setEmailInputValue(notificationEmail);
+  };
+
+  const handleEmailSave = () => {
+    if (emailInputValue.trim() && emailInputValue !== notificationEmail) {
+      updateNotificationEmailMutation.mutate(emailInputValue.trim());
+    } else {
+      setIsEditingEmail(false);
+    }
+  };
+
+  const handleEmailCancel = () => {
+    setIsEditingEmail(false);
+    setEmailInputValue(notificationEmail);
   };
 
   if (isLoading) {
@@ -76,6 +122,53 @@ const Settings: React.FC = () => {
           <div className="settings-card">
             <h2 className="settings-card-title">Notification Settings</h2>
             
+            <div className="settings-item">
+              <div className="settings-item-info">
+                <div className="settings-item-label">Notification Email</div>
+                <div className="settings-item-description">
+                  Email address where reminder notifications will be sent
+                </div>
+              </div>
+              
+              {isEditingEmail ? (
+                <div className="settings-email-edit">
+                  <input
+                    type="email"
+                    value={emailInputValue}
+                    onChange={(e) => setEmailInputValue(e.target.value)}
+                    className="settings-email-input"
+                    disabled={updateNotificationEmailMutation.isPending}
+                  />
+                  <div className="settings-email-actions">
+                    <button
+                      onClick={handleEmailSave}
+                      className="settings-email-btn settings-email-btn-save"
+                      disabled={updateNotificationEmailMutation.isPending}
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={handleEmailCancel}
+                      className="settings-email-btn settings-email-btn-cancel"
+                      disabled={updateNotificationEmailMutation.isPending}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="settings-email-display">
+                  <span className="settings-item-value">{notificationEmail || user?.email}</span>
+                  <button
+                    onClick={handleEmailEdit}
+                    className="settings-email-edit-btn"
+                  >
+                    Edit
+                  </button>
+                </div>
+              )}
+            </div>
+
             <div className="settings-item">
               <div className="settings-item-info">
                 <div className="settings-item-label">Receive Review Reminders</div>

@@ -109,3 +109,89 @@ input:checked + .slider:before {
   transform: translateX(22px);
 }
 
+/* Email Edit Styles */
+.settings-email-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings-email-edit-btn {
+  background: none;
+  border: none;
+  color: #4f46e5;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.settings-email-edit-btn:hover {
+  background-color: #f3f4f6;
+}
+
+.settings-email-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.settings-email-input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 15px;
+  width: 280px;
+  transition: border-color 0.2s;
+}
+
+.settings-email-input:focus {
+  outline: none;
+  border-color: #4f46e5;
+}
+
+.settings-email-input:disabled {
+  background-color: #f9fafb;
+  cursor: not-allowed;
+}
+
+.settings-email-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.settings-email-btn {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.settings-email-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.settings-email-btn-save {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.settings-email-btn-save:hover:not(:disabled) {
+  background-color: #4338ca;
+}
+
+.settings-email-btn-cancel {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.settings-email-btn-cancel:hover:not(:disabled) {
+  background-color: #e5e7eb;
+}
+
