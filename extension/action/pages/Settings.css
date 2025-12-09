@@ -1,0 +1,11 @@
+.settings {
+    height: 100%;
+}
+
+.settings .about {
+    margin-top: 16px;
+}
+
+.settings .submit {
+    margin-top: 100px;
+}

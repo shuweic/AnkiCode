@@ -5,12 +5,14 @@
   "workspaces": [
     "backend",
     "frontend",
-    "database_scripts"
+    "database_scripts",
+    "extension"
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "npm run dev --workspace=backend",
     "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:extension": "npm run dev --workspace=extension",
     "seed": "npm run seed --workspace=database_scripts",
     "wipe": "npm run wipe --workspace=database_scripts",
     "fixinvalid": "npm run fixinvalid --workspace=database_scripts",
@@ -21,4 +23,3 @@
     "concurrently": "^8.2.2"
   }
 }
-

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json.schemastore.org/chrome-manifest.json",
+  "manifest_version": 3,
+  "version": "0.0.1",
+  "name": "AnkiCode Extension for Edge",
+  "description": "AnkiCode extension to schedule LeetCode practices directly from your browser.",
+  "icons": {
+    "16": "images/extension_16.png",
+    "48": "images/extension_48.png"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "service_worker.ts"
+  },
+  "action": {
+    "default_popup": "action/index.html",
+    "default_title": "AnkiCode Extension",
+    "default_icon": {
+      "16": "images/extension_16.png",
+      "48": "images/extension_48.png"
+    }
+  },
+  "host_permissions": [
+    "$EXTENSION_PUBLIC_API_URL/*"
+  ]
+}

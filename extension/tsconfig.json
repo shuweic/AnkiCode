@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "moduleResolution": "node",
+    "module": "esnext",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "esnext",
+    "types": [
+      "node"
+    ],
+    "verbatimModuleSyntax": true,
+    "useDefineForClassFields": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": [
+        "./action/*"
+      ]
+    }
+  },
+  "include": [
+    "./",
+    "extension-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

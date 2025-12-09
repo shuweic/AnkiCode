@@ -1,0 +1,49 @@
+.login {
+    padding: 48px 40px;
+    padding-right: 25px;
+}
+
+.login .header {
+    margin-bottom: 36px;
+}
+
+.login .header .subtitle {
+    font-size: 16px;
+}
+
+.login .header .logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    color: white;
+    margin: 0 auto 20px;
+    box-shadow: 0 8px 16px -4px rgba(102, 126, 234, 0.4);
+}
+
+.login .input {
+    margin-bottom: 8px;
+}
+
+.login .input .label {
+    margin-bottom: 4px;
+}
+
+.login .input .icon {
+    padding-right: 4px;
+}
+
+.login .submit {
+    margin-top: 12px;
+    width: 100%;
+}
+
+.login .footer {
+    text-align: center;
+    width: 100%;
+    display: block;
+    font-size: 14px;
+}
