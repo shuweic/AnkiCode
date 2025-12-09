@@ -78,6 +78,12 @@ async function sendReminderEmails() {
         continue;
       }
 
+      // skip example.com emails
+      if (email.endsWith('@example.com')) {
+        console.log(`⏭️  Skipping user ${user._id} - example.com email address`);
+        continue;
+      }
+
       if (!remindersByUser.has(email)) {
         remindersByUser.set(email, []);
       }
